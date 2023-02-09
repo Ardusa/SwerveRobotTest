@@ -9,8 +9,9 @@ public class SwerveCMD extends CommandBase {
     private Swerve mSwerve;
     private DoubleSupplier input;
 
-    public SwerveCMD(DoubleSupplier x) {
+    public SwerveCMD(Swerve mSwerve, DoubleSupplier x) {
         input = x;
+
         mSwerve = Swerve.getInstance();
         addRequirements(mSwerve);
     }

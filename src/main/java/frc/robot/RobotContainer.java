@@ -47,7 +47,7 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    mSwerve.setDefaultCommand(new SwerveCMD(
+    mSwerve.setDefaultCommand(new SwerveCMD(mSwerve,
       () -> xDrive.getLeftTriggerAxis()
     )
     );
