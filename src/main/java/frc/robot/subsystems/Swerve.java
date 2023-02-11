@@ -23,7 +23,7 @@ public class Swerve extends SubsystemBase {
     public Swerve() {}
 
     public void setSpeeds(double input, double input2) {
-        Swerve1.set(ControlMode.PercentOutput, input);
+        Swerve1.set(ControlMode.Position, input);
         Swerve2.set(input2);
     }
 }
