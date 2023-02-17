@@ -96,19 +96,19 @@ public class RobotContainer {
         Music mMusic = Music.getInstance();
         Arm mArm = new Arm();
         mMusic.setDefaultCommand(new MusicCMD(
-            mManipController.getStartButton(),
-            mManipController.getStartButton(),
+            mDriverController.getStartButton(),
+            mDriverController.getStartButton(),
             false,
             mArm.getTalonFXs()
         )
         );        
-
+/* Undo today
         s_Arm.setDefaultCommand(
             new ArmStupid(
                 () -> mManipController.getLeftY(),  
                 () -> mManipController.getRightY())
         );
-
+Undo today */
         // s_Arm.setShoulderMotorPower(mManipController.getLeftY());
         // s_Arm.setElbowMotorPower(mManipController.getRightY());
 
@@ -116,6 +116,7 @@ public class RobotContainer {
         // zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
     }
 
+/* Undo Today
     public Command getAutonomousCommand() {
         s_Swerve.setDefaultCommand(
             new TeleopSwerve(
@@ -135,4 +136,5 @@ public class RobotContainer {
 
         return null;
     }
+Undo Today */
 }
