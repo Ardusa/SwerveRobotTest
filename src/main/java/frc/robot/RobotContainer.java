@@ -1,21 +1,17 @@
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.MusicCMD;
-import frc.robot.commands.Arm.ArmManager;
-import frc.robot.commands.Arm.ArmStupid;
-// import frc.robot.commands.Drivetrain.TeleopSwerve;
+import frc.robot.commands.Arm.ChangeSetPoint;
 import frc.robot.commands.Autos.balance;
-import frc.robot.commands.Drivetrain.Flatten;
-import frc.robot.commands.Drivetrain.TeleopSwerve;
+import frc.robot.commands.Hand.SetHand;
+import frc.robot.commands.Swerve.Flatten;
+import frc.robot.commands.Swerve.TeleopSwerve;
 import frc.robot.subsystems.*;
 
 /**
@@ -29,18 +25,12 @@ public class RobotContainer {
     private final XboxController mDriverController = new XboxController(0);
     private final XboxController mManipController = new XboxController(1);
 
-
-    private TalonFX talonShoulder, talonElbow;
     private final int translationAxis = XboxController.Axis.kLeftY.value;
     private final int strafeAxis = XboxController.Axis.kLeftX.value;
     private final int rotationAxis = XboxController.Axis.kRightX.value;
+    private final int extraAxis = XboxController.Axis.kRightY.value;
+
   
-    // private final Hand mHand = Hand.getInstance();
-    // private final Arm mArm = Arm.getInstance();
-
-  //private final Drivetrain mDrivetrain = Drivetrain.getInstance();
-//   private final Vision mVision = Vision.getInstance();
-
     /* Driver Buttons */
     private final JoystickButton zeroGyro = new JoystickButton(mDriverController, XboxController.Button.kBack.value);
     private final JoystickButton robotCentric = new JoystickButton(mDriverController, XboxController.Button.kLeftBumper.value);
@@ -48,29 +38,10 @@ public class RobotContainer {
     /* Subsystems */
     private final Swerve s_Swerve = Swerve.getInstance();
     private final Arm s_Arm = Arm.getInstance();
+    private final Hand s_Hand = Hand.getInstance();
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
-        talonShoulder = new TalonFX(50);
-        talonElbow = new TalonFX(51);
-
-
-        
-        // if(mDriverController.getAButton()) {
-        //     new Flatten(0.3); 
-        // } else if(mDriverController.getBButton()) {
-        //     new balance();
-        // } else {
-        //     s_Swerve.setDefaultCommand(
-        //         new TeleopSwerve(
-        //             () -> -mDriverController.getRawAxis(translationAxis), 
-        //             () -> -mDriverController.getRawAxis(strafeAxis), 
-        //             () -> -mDriverController.getRawAxis(rotationAxis), 
-        //             () -> robotCentric.getAsBoolean()
-        //         )
-        //     );
-        // }
-        // Configure the button bindings
         configureButtonBindings();
     }
 
@@ -81,43 +52,6 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-        /* Driver Buttons */
-        // s_Swerve.setDefaultCommand(
-        //     new TeleopSwerve(
-        //         () -> -mDriverController.getRawAxis(translationAxis), 
-        //         () -> -mDriverController.getRawAxis(strafeAxis), 
-        //         () -> -mDriverController.getRawAxis(rotationAxis), 
-        //         () -> true
-        //     )
-        // );
-        // // Configure the button bindings
-
-            //Music Selector
-        Music mMusic = Music.getInstance();
-        Arm mArm = new Arm();
-        mMusic.setDefaultCommand(new MusicCMD(
-            mDriverController.getStartButton(),
-            mDriverController.getStartButton(),
-            false,
-            mArm.getTalonFXs()
-        )
-        );        
-/* Undo today
-        s_Arm.setDefaultCommand(
-            new ArmStupid(
-                () -> mManipController.getLeftY(),  
-                () -> mManipController.getRightY())
-        );
-Undo today */
-        // s_Arm.setShoulderMotorPower(mManipController.getLeftY());
-        // s_Arm.setElbowMotorPower(mManipController.getRightY());
-
-
-        // zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
-    }
-
-/* Undo Today
-    public Command getAutonomousCommand() {
         s_Swerve.setDefaultCommand(
             new TeleopSwerve(
                 () -> -mDriverController.getRawAxis(translationAxis), 
@@ -126,15 +60,17 @@ Undo today */
                 () -> robotCentric.getAsBoolean()
             )
         );
+        
+        SmartDashboard.putData("Play Music", new MusicCMD());
 
-        s_Arm.setStickSupplier(() -> mManipController.getRawAxis(translationAxis));
-        s_Arm.setStickEnableSupplier(() -> mManipController.getAButton());
+        new JoystickButton(mDriverController, XboxController.Button.kLeftBumper.value).whileTrue(new SetHand());
+
+        s_Arm.setElbowStickSupplier(() -> mManipController.getRawAxis(translationAxis));
+        s_Arm.setShoulderStickSupplier(() -> mManipController.getRawAxis(extraAxis));
+        s_Arm.setStickEnableSupplier(() -> mDriverController.getRightBumper());
 
         new JoystickButton(mDriverController, XboxController.Button.kBack.value).toggleOnTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
         new JoystickButton(mDriverController, XboxController.Button.kB.value).whileTrue(new balance());
         new JoystickButton(mDriverController, XboxController.Button.kA.value).whileTrue(new Flatten(0.3));
-
-        return null;
     }
-Undo Today */
 }
