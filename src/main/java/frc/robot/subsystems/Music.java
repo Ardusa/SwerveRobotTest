@@ -92,13 +92,16 @@ public class Music extends SubsystemBase {
         }
         return playlist[SongNum];
     }
-    
+
     public static void setLights() {
+        double lightVal = 0;
         if (mOrchestra.isPlaying()) {
-            blinken.set(0.65);
+            //if (Song == playlist[0]) {}
+            lightVal = -0.03;
         } else {
-            blinken.set(0.03);
+            lightVal = 0.67;
         }
+        blinken.set(lightVal);
     }
     
     public void skipSong() {
